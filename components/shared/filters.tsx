@@ -1,6 +1,33 @@
 import React from "react";
-import { Title, FilterCheckbox } from ".";
+import { Title, FilterCheckbox, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
+
+const mockItems = [
+  {
+    text: "Cheese Sauce",
+    value: "1",
+  },
+  {
+    text: "Mozzarella",
+    value: "2",
+  },
+  {
+    text: "Garlic",
+    value: "3",
+  },
+  {
+    text: "Pickles",
+    value: "4",
+  },
+  {
+    text: "Red Onion",
+    value: "5",
+  },
+  {
+    text: "Tomatoes",
+    value: "6",
+  },
+];
 
 interface Props {
   className?: string;
@@ -28,6 +55,13 @@ export const Filters: React.FC<Props> = ({ className }) => {
         </div>
         <RangeSlider min={0} max={30} step={1} value={[0, 30]} />
       </div>
+      <CheckboxFiltersGroup
+        title="Ingredients"
+        className="mt-5"
+        limit={6}
+        defaultItems={mockItems}
+        items={mockItems}
+      />
     </div>
   );
 };
