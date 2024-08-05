@@ -1,3 +1,5 @@
+import { ProductsGroupList } from "./products-group-list";
+import { ProductCard } from "./product-card";
 import { FilterCheckbox } from ".";
 import { Categories } from "./categories";
 export { Container } from "./container";
@@ -9,3 +11,5 @@ export { TopBar } from "./top-bar";
 export { Filters } from "./filters";
 export { FilterCheckbox } from "./filter-checkbox";
 export { CheckboxFiltersGroup } from "./checkbox-filters-group";
+export { ProductCard } from "./product-card";
+export { ProductsGroupList } from "./products-group-list";

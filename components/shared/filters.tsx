@@ -2,7 +2,57 @@ import React from "react";
 import { Title, FilterCheckbox, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
 
-const mockItems = [
+const defaultMockItems = [
+  {
+    text: "Cheese Sauce",
+    value: "1",
+  },
+  {
+    text: "Mozzarella",
+    value: "2",
+  },
+  {
+    text: "Garlic",
+    value: "3",
+  },
+  {
+    text: "Pickles",
+    value: "4",
+  },
+  {
+    text: "Red Onion",
+    value: "5",
+  },
+  {
+    text: "Tomatoes",
+    value: "6",
+  },
+];
+const allMockItems = [
+  {
+    text: "Cheese Sauce",
+    value: "1",
+  },
+  {
+    text: "Mozzarella",
+    value: "2",
+  },
+  {
+    text: "Garlic",
+    value: "3",
+  },
+  {
+    text: "Pickles",
+    value: "4",
+  },
+  {
+    text: "Red Onion",
+    value: "5",
+  },
+  {
+    text: "Tomatoes",
+    value: "6",
+  },
   {
     text: "Cheese Sauce",
     value: "1",
@@ -59,8 +109,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
         title="Ingredients"
         className="mt-5"
         limit={6}
-        defaultItems={mockItems}
-        items={mockItems}
+        defaultItems={defaultMockItems}
+        items={allMockItems}
       />
     </div>
   );
