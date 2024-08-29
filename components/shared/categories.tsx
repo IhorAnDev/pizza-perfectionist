@@ -8,13 +8,13 @@ interface Props {
 }
 
 const cats = [
-  "Pizzas",
-  "Combo",
-  "Snacks",
-  "Cocktails",
-  "Coffee",
-  "Drinks",
-  "Desserts",
+  { id: 1, name: "Pizzas" },
+  { id: 2, name: "Snacks" },
+  { id: 3, name: "Combo" },
+  { id: 4, name: "Cocktails" },
+  { id: 5, name: "Coffee" },
+  { id: 6, name: "Drinks" },
+  { id: 7, name: "Desserts" },
 ];
 
 export const Categories: React.FC<Props> = ({ className }) => {
@@ -23,17 +23,17 @@ export const Categories: React.FC<Props> = ({ className }) => {
     <div
       className={cn("inline-flex gap-1 p-1 rounded-2xl bg-gray-50", className)}
     >
-      {cats.map((cat, index) => (
+      {cats.map(({ name, id }, index) => (
         <a
-          key={cat}
-          href="#"
+          key={index}
+          href={`/#${name}`}
           className={cn(
             "flex items-center font-bold h-11 rounded-2xl px-5",
-            categoryActiveId === index + 1 &&
+            categoryActiveId === id &&
               "bg-white shadow-md shadow-gray-200 text-primary"
           )}
         >
-          <button>{cat}</button>
+          <button>{name}</button>
         </a>
       ))}
     </div>
