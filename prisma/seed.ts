@@ -4,7 +4,7 @@ import { categories, ingredients, products } from "./constants";
 
 const prisma = new PrismaClient();
 
-/* const randomDecimalNumber = (min: number, max: number) => {
+const randomDecimalNumber = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min) * 10 + min * 10) / 10;
 };
 
@@ -19,13 +19,13 @@ const generateProductItem = ({
 }) => {
   return {
     productId,
-    price: randomDecimalNumber(190, 600),
+    price: randomDecimalNumber(4, 25),
     pizzaType,
     size,
   } as Prisma.ProductItemUncheckedCreateInput;
 };
 
-*/
+
 
 async function up() {
   await prisma.user.createMany({
@@ -58,8 +58,6 @@ async function up() {
   await prisma.product.createMany({
     data: products,
   });
-
-
 
   const pizza1 = await prisma.product.create({
     data: {
@@ -97,7 +95,7 @@ async function up() {
     },
   });
 
-    /* 
+
 
   await prisma.productItem.createMany({
     data: [
@@ -139,6 +137,8 @@ async function up() {
       generateProductItem({ productId: 17 }),
     ],
   });
+
+    /* 
 
   await prisma.cart.createMany({
     data: [
