@@ -7,7 +7,12 @@ export async function GET({ nextUrl: { searchParams } }: NextRequest) {
     where: {
       name: {
         contains: query,
+        mode: "insensitive",
       },
+    },
+    take: 5,
+    orderBy: {
+      name: "asc",
     },
   });
   return NextResponse.json(products);
