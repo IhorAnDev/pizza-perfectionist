@@ -8,24 +8,31 @@ const randomDecimalNumber = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min) * 10 + min * 10) / 10;
 };
 
-const generateProductItem = ({
-  productId,
-  pizzaType,
-  size,
-}: {
+interface GenerateProductItemParams {
   productId: number;
+  randomFunction?: (min: number, max: number) => number; // Make it optional
   pizzaType?: number;
   size?: number;
-}) => {
+}
+
+const generateProductItem = ({
+  productId,
+  randomFunction = randomDecimalNumber,
+  pizzaType,
+  size,
+}: GenerateProductItemParams): Prisma.ProductItemUncheckedCreateInput => {
+  const isPizza = typeof pizzaType !== "undefined";
+
+  const minPrice = isPizza ? 4 : 3;
+  const maxPrice = isPizza ? 25 : 9;
+
   return {
     productId,
-    price: randomDecimalNumber(4, 25),
+    price: randomFunction(minPrice, maxPrice),
     pizzaType,
     size,
-  } as Prisma.ProductItemUncheckedCreateInput;
+  };
 };
-
-
 
 async function up() {
   await prisma.user.createMany({
@@ -95,8 +102,6 @@ async function up() {
     },
   });
 
-
-
   await prisma.productItem.createMany({
     data: [
       // Pizza "Pepperoni Fresh"
@@ -138,33 +143,36 @@ async function up() {
     ],
   });
 
-    /* 
+
 
   await prisma.cart.createMany({
     data: [
       {
         userId: 1,
         totalAmount: 0,
+        tokenId: "11111",
       },
       {
         userId: 2,
         totalAmount: 0,
+        tokenId: "22222",
       },
     ],
   });
+
 
   await prisma.cartItem.create({
     data: {
       productItemId: 1,
       cartId: 1,
-      userId: 1,
-      quantity: 1,
-      pizzaSize: 20,
+      quantity: 2,
       ingredients: {
         connect: [{ id: 1 }, { id: 2 }, { id: 3 }],
       },
     },
   });
+
+    /* 
 
     await prisma.story.createMany({
     data: [
