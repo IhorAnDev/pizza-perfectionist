@@ -3,21 +3,27 @@
 import { cn } from "@/lib/utils";
 import { Search } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { useClickAway } from "react-use";
 import Image from "next/image";
+import { Api } from "@/services/api-client";
 
 interface Props {
   className?: string;
 }
 
 export const SearchInput: React.FC<Props> = ({ className }) => {
+  const [searchValue, setSearchValue] = React.useState("");
   const [focused, setFocused] = React.useState(false);
   const ref = React.useRef(null);
 
   useClickAway(ref, () => {
     setFocused(false);
   });
+
+  useEffect(() => {
+    Api.products.search(searchValue);
+  }, [searchValue]);
 
   return (
     <>
@@ -38,6 +44,8 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
           type="text"
           placeholder="Searching for..."
           onFocus={() => setFocused(true)}
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
         />
         <div
           className={cn(
