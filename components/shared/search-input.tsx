@@ -7,7 +7,8 @@ import React, { useEffect } from "react";
 import { useClickAway } from "react-use";
 import Image from "next/image";
 import { Api } from "@/services/api-client";
-
+import { Product } from "@prisma/client";
+import { debounce } from "lodash";
 interface Props {
   className?: string;
 }
@@ -15,15 +16,31 @@ interface Props {
 export const SearchInput: React.FC<Props> = ({ className }) => {
   const [searchValue, setSearchValue] = React.useState("");
   const [focused, setFocused] = React.useState(false);
+  const [products, setProducts] = React.useState<Product[]>([]);
   const ref = React.useRef(null);
 
   useClickAway(ref, () => {
     setFocused(false);
   });
 
+  const debouncedApiCall = React.useMemo(
+    () =>
+      debounce((value) => {
+        Api.products.search(value).then((res) => setProducts(res));
+      }, 300),
+    []
+  );
+
   useEffect(() => {
-    Api.products.search(searchValue);
-  }, [searchValue]);
+    if (searchValue) {
+      debouncedApiCall(searchValue);
+    } else {
+      setProducts([]);
+    }
+    return () => {
+      debouncedApiCall.cancel();
+    };
+  }, [searchValue, debouncedApiCall]);
 
   return (
     <>
@@ -53,17 +70,20 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
             focused && "visible opacity-100 top-12"
           )}
         >
-          <Link
-            className="flex items-center gap-3 w-full px-3 py-2 hover:bg-primary/10"
-            href="/product/1"
-          >
-            <img
-              className="rouunded-sm w-8 h-8"
-              src="https://media.dodostatic.net/image/r:233x233/11EE7D61304FAF5A98A6958F2BB2D260.webp"
-              alt="pizza 1"
-            />
-            <span>Pizza 1</span>
-          </Link>
+          {products.map((product) => (
+            <Link
+              key={product.id}
+              className="flex items-center gap-3 w-full px-3 py-2 hover:bg-primary/10"
+              href="/product/1"
+            >
+              <img
+                className="rouunded-sm w-8 h-8"
+                src={product.imageUrl}
+                alt="pizza 1"
+              />
+              <span>{product.name}</span>
+            </Link>
+          ))}
         </div>
       </div>
     </>
