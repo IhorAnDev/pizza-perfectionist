@@ -4,11 +4,10 @@ import { cn } from "@/lib/utils";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect } from "react";
-import { useClickAway } from "react-use";
+import { useClickAway, useDebounce } from "react-use";
 import Image from "next/image";
 import { Api } from "@/services/api-client";
 import { Product } from "@prisma/client";
-import { debounce } from "lodash";
 interface Props {
   className?: string;
 }
@@ -23,24 +22,13 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
     setFocused(false);
   });
 
-  const debouncedApiCall = React.useMemo(
-    () =>
-      debounce((value) => {
-        Api.products.search(value).then((res) => setProducts(res));
-      }, 300),
-    []
+  useDebounce(
+    () => {
+      Api.products.search(searchValue).then((items) => setProducts(items));
+    },
+    300,
+    [searchValue]
   );
-
-  useEffect(() => {
-    if (searchValue) {
-      debouncedApiCall(searchValue);
-    } else {
-      setProducts([]);
-    }
-    return () => {
-      debouncedApiCall.cancel();
-    };
-  }, [searchValue, debouncedApiCall]);
 
   return (
     <>
