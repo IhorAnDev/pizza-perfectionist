@@ -4,89 +4,12 @@ import { Title, FilterCheckbox, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
 import { useFilterIngredients } from "@/hooks/useFilterIngredients";
 
-const defaultMockItems = [
-  {
-    text: "Cheese Sauce",
-    value: "1",
-  },
-  {
-    text: "Mozzarella",
-    value: "2",
-  },
-  {
-    text: "Garlic",
-    value: "3",
-  },
-  {
-    text: "Pickles",
-    value: "4",
-  },
-  {
-    text: "Red Onion",
-    value: "5",
-  },
-  {
-    text: "Tomatoes",
-    value: "6",
-  },
-];
-const allMockItems = [
-  {
-    text: "Cheese Sauce",
-    value: "1",
-  },
-  {
-    text: "Mozzarella",
-    value: "2",
-  },
-  {
-    text: "Garlic",
-    value: "3",
-  },
-  {
-    text: "Pickles",
-    value: "4",
-  },
-  {
-    text: "Red Onion",
-    value: "5",
-  },
-  {
-    text: "Tomatoes",
-    value: "6",
-  },
-  {
-    text: "Cheese Sauce",
-    value: "1",
-  },
-  {
-    text: "Mozzarella",
-    value: "2",
-  },
-  {
-    text: "Garlic",
-    value: "3",
-  },
-  {
-    text: "Pickles",
-    value: "4",
-  },
-  {
-    text: "Red Onion",
-    value: "5",
-  },
-  {
-    text: "Tomatoes",
-    value: "6",
-  },
-];
-
 interface Props {
   className?: string;
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
-  const { ingredients } = useFilterIngredients();
+  const { ingredients, loading } = useFilterIngredients();
 
   const items = ingredients.map((item) => ({
     value: String(item.id),
@@ -120,6 +43,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
         limit={6}
         defaultItems={items.slice(0, 6)}
         items={items}
+        loading={loading}
       />
     </div>
   );
