@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
-  const { ingredients, loading } = useFilterIngredients();
+  const { ingredients, loading, selectedIds, onAddId } = useFilterIngredients();
 
   const items = ingredients.map((item) => ({
     value: String(item.id),
@@ -20,8 +20,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
     <div className={className}>
       <Title text="Filters" size="sm" className="font-bold mb-5" />
       <div className="flex flex-col gap-4">
-        <FilterCheckbox text="can be delivered" value="1" />
-        <FilterCheckbox text="new" value="2" />
+        <FilterCheckbox name="delivery" text="can be delivered" value="1" />
+        <FilterCheckbox name="new" text="new" value="2" />
       </div>
       <div className="mt-5 border-y border-y-neutral-100 py-6 pb-7">
         <p className="font-bold mb-3">Price from and to:</p>
@@ -44,6 +44,9 @@ export const Filters: React.FC<Props> = ({ className }) => {
         defaultItems={items.slice(0, 6)}
         items={items}
         loading={loading}
+        onClickCheckbox={onAddId}
+        selectedIds={selectedIds}
+        name="ingredients"
       />
     </div>
   );
