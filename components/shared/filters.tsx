@@ -8,7 +8,7 @@ interface Props {
   className?: string;
 }
 
-
+I mean by profession e.x cyber security, data analyst 
 export const Filters: React.FC<Props> = ({ className }) => {
   const { ingredients, loading, selectedIds, onAddId } = useFilterIngredients();
 
