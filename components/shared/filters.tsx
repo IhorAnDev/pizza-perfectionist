@@ -8,6 +8,11 @@ interface Props {
   className?: string;
 }
 
+interface Props {
+  priceFrom: number;
+  priceTo: number;
+}
+
 export const Filters: React.FC<Props> = ({ className }) => {
   const { ingredients, loading, selectedIds, onAddId } = useFilterIngredients();
 
