@@ -8,7 +8,11 @@ interface Props {
   className?: string;
 }
 
-I mean by profession e.x cyber security, data analyst 
+interface PriceProps {
+  priceFrom: number;
+  priceTo: number;
+}
+
 export const Filters: React.FC<Props> = ({ className }) => {
   const { ingredients, loading, selectedIds, onAddId } = useFilterIngredients();
 
