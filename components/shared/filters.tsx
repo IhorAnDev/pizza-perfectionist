@@ -15,11 +15,22 @@ interface PriceProps {
 
 export const Filters: React.FC<Props> = ({ className }) => {
   const { ingredients, loading, selectedIds, onAddId } = useFilterIngredients();
+  const [prices, setPrice] = React.useState<PriceProps>({
+    priceFrom: 0,
+    priceTo: 30,
+  });
 
   const items = ingredients.map((item) => ({
     value: String(item.id),
     text: item.name,
   }));
+
+  const updatePrice = (name: keyof PriceProps, value: number) => {
+    setPrice({
+      ...prices,
+      [name]: value,
+    });
+  };
 
   return (
     <div className={className}>
@@ -37,8 +48,16 @@ export const Filters: React.FC<Props> = ({ className }) => {
             min={0}
             max={30}
             defaultValue={0}
+            value={String(prices.priceFrom)}
+            onChange={(e) => updatePrice("priceFrom", Number(e.target.value))}
           />
-          <Input type="number" placeholder="30" min={15} />
+          <Input
+            type="number"
+            placeholder="30"
+            min={15}
+            value={String(prices.priceTo)}
+            onChange={(e) => updatePrice("priceTo", Number(e.target.value))}
+          />
         </div>
         <RangeSlider min={0} max={30} step={1} value={[0, 30]} />
       </div>
