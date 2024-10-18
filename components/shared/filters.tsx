@@ -5,7 +5,7 @@ import { Input, RangeSlider } from "../ui";
 import { useFilterIngredients } from "@/hooks/useFilterIngredients";
 import { useSet } from "react-use";
 import qs from "qs";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Props {
   className?: string;
@@ -16,13 +16,31 @@ interface PriceProps {
   priceTo?: number;
 }
 
+interface Queryfilters extends PriceProps {
+  pizzaTypes: string;
+  sizes: string;
+  ingredients: string;
+}
+
 export const Filters: React.FC<Props> = ({ className }) => {
+  const searchParams = useSearchParams() as unknown as Map<
+    keyof Queryfilters,
+    string
+  >;
   const router = useRouter();
   const { ingredients, loading, selectedIngredients, onAddId } =
     useFilterIngredients();
-  const [prices, setPrice] = React.useState<PriceProps>({});
+  const [prices, setPrice] = React.useState<PriceProps>({
+    priceFrom: Number(searchParams.get("priceFrom")) || undefined,
+    priceTo: Number(searchParams.get("priceTo")) || undefined,
+  });
 
-  const [sizes, { toggle: toggleSizes }] = useSet(new Set<string>([]));
+  const [sizes, { toggle: toggleSizes }] = useSet(
+    new Set<string>(
+      searchParams.has("sizes") ? searchParams.get("sizes")?.split(",") : []
+    )
+  );
+
   const [pizzaTypes, { toggle: toggleTypes }] = useSet(new Set<string>([]));
 
   const items = ingredients.map((item) => ({
@@ -45,11 +63,27 @@ export const Filters: React.FC<Props> = ({ className }) => {
       ingredients: Array.from(selectedIngredients),
     };
 
-    const queryString = qs.stringify(filters, {
+    const filteredFilters: Partial<Queryfilters> = {
+      ...(filters.priceFrom !== undefined && filters.priceFrom !== 0
+        ? { priceFrom: filters.priceFrom }
+        : {}),
+      ...(filters.priceTo !== undefined && filters.priceTo !== 30
+        ? { priceTo: filters.priceTo }
+        : {}),
+      ...(filters.pizzaTypes.length > 0
+        ? { pizzaTypes: filters.pizzaTypes.join(",") }
+        : {}),
+      ...(filters.sizes.length > 0 ? { sizes: filters.sizes.join(",") } : {}),
+      ...(filters.ingredients.length > 0
+        ? { ingredients: filters.ingredients.join(",") }
+        : {}),
+    };
+
+    const queryString = qs.stringify(filteredFilters, {
       arrayFormat: "comma",
     });
 
-    router.push(`?${queryString}`);
+    router.push(`?${queryString}`, { scroll: false });
   }, [prices, pizzaTypes, sizes, selectedIngredients, router]);
 
   return (
@@ -87,14 +121,16 @@ export const Filters: React.FC<Props> = ({ className }) => {
             placeholder="0"
             min={0}
             max={30}
-            value={String(prices.priceFrom)}
+            value={
+              prices.priceFrom !== undefined ? String(prices.priceFrom) : "0"
+            }
             onChange={(e) => updatePrice("priceFrom", Number(e.target.value))}
           />
           <Input
             type="number"
             placeholder="30"
             min={15}
-            value={String(prices.priceTo)}
+            value={prices.priceTo !== undefined ? String(prices.priceTo) : "30"}
             onChange={(e) => updatePrice("priceTo", Number(e.target.value))}
           />
         </div>
