@@ -29,7 +29,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
   >;
   const router = useRouter();
   const { ingredients, loading, selectedIngredients, onAddId } =
-    useFilterIngredients();
+    useFilterIngredients(searchParams.get("ingredients")?.split(",") || []);
   const [prices, setPrice] = React.useState<PriceProps>({
     priceFrom: Number(searchParams.get("priceFrom")) || undefined,
     priceTo: Number(searchParams.get("priceTo")) || undefined,
@@ -41,7 +41,13 @@ export const Filters: React.FC<Props> = ({ className }) => {
     )
   );
 
-  const [pizzaTypes, { toggle: toggleTypes }] = useSet(new Set<string>([]));
+  const [pizzaTypes, { toggle: toggleTypes }] = useSet(
+    new Set<string>(
+      searchParams.has("pizzaTypes")
+        ? searchParams.get("pizzaTypes")?.split(",")
+        : []
+    )
+  );
 
   const items = ingredients.map((item) => ({
     value: String(item.id),
