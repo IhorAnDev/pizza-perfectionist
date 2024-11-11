@@ -1,96 +1,58 @@
+"use client";
 import React from "react";
-import { Title, FilterCheckbox, CheckboxFiltersGroup } from ".";
+import { Title, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
-
-const defaultMockItems = [
-  {
-    text: "Cheese Sauce",
-    value: "1",
-  },
-  {
-    text: "Mozzarella",
-    value: "2",
-  },
-  {
-    text: "Garlic",
-    value: "3",
-  },
-  {
-    text: "Pickles",
-    value: "4",
-  },
-  {
-    text: "Red Onion",
-    value: "5",
-  },
-  {
-    text: "Tomatoes",
-    value: "6",
-  },
-];
-const allMockItems = [
-  {
-    text: "Cheese Sauce",
-    value: "1",
-  },
-  {
-    text: "Mozzarella",
-    value: "2",
-  },
-  {
-    text: "Garlic",
-    value: "3",
-  },
-  {
-    text: "Pickles",
-    value: "4",
-  },
-  {
-    text: "Red Onion",
-    value: "5",
-  },
-  {
-    text: "Tomatoes",
-    value: "6",
-  },
-  {
-    text: "Cheese Sauce",
-    value: "1",
-  },
-  {
-    text: "Mozzarella",
-    value: "2",
-  },
-  {
-    text: "Garlic",
-    value: "3",
-  },
-  {
-    text: "Pickles",
-    value: "4",
-  },
-  {
-    text: "Red Onion",
-    value: "5",
-  },
-  {
-    text: "Tomatoes",
-    value: "6",
-  },
-];
+import { useFilters, useIngredients, useQueryFilters } from "@/hooks";
 
 interface Props {
   className?: string;
 }
+interface PriceProps {
+  priceFrom?: number;
+  priceTo?: number;
+}
 
 export const Filters: React.FC<Props> = ({ className }) => {
+  const { ingredients, loading } = useIngredients();
+
+  const filters = useFilters();
+  useQueryFilters(filters);
+
+  const items = ingredients.map((item) => ({
+    value: String(item.id),
+    text: item.name,
+  }));
+  const updatePrices = (prices: number[]) => {
+    filters.setPrices("priceFrom", prices[0]);
+    filters.setPrices("priceTo", prices[1]);
+  };
   return (
     <div className={className}>
       <Title text="Filters" size="sm" className="font-bold mb-5" />
-      <div className="flex flex-col gap-4">
-        <FilterCheckbox text="can be delivered" value="1" />
-        <FilterCheckbox text="new" value="2" />
-      </div>
+
+      <CheckboxFiltersGroup
+        title="Types"
+        className="mt-5"
+        onClickCheckbox={filters.setPizzaTypes}
+        items={[
+          { text: "Thin", value: "1" },
+          { text: "Classic", value: "2" },
+        ]}
+        selectedValues={filters.pizzaTypes}
+      />
+
+      <CheckboxFiltersGroup
+        title="Sizes"
+        className="mt-5"
+        onClickCheckbox={filters.setSizes}
+        items={[
+          { value: "Small", text: "20 cm" },
+          { value: "Medium", text: "30 cm" },
+          { value: "Large", text: "40 cm" },
+        ]}
+        selectedValues={filters.sizes}
+      />
+
       <div className="mt-5 border-y border-y-neutral-100 py-6 pb-7">
         <p className="font-bold mb-3">Price from and to:</p>
         <div className="flex mb-5 gap-3">
@@ -99,18 +61,47 @@ export const Filters: React.FC<Props> = ({ className }) => {
             placeholder="0"
             min={0}
             max={30}
-            defaultValue={0}
+            value={
+              filters.prices.priceFrom !== undefined
+                ? String(filters.prices.priceFrom)
+                : "0"
+            }
+            onChange={(e) =>
+              filters.setPrices("priceFrom", Number(e.target.value))
+            }
           />
-          <Input type="number" placeholder="30" min={15} />
+          <Input
+            type="number"
+            placeholder="30"
+            min={15}
+            value={
+              filters.prices.priceTo !== undefined
+                ? String(filters.prices.priceTo)
+                : "30"
+            }
+            onChange={(e) =>
+              filters.setPrices("priceTo", Number(e.target.value))
+            }
+          />
         </div>
-        <RangeSlider min={0} max={30} step={1} value={[0, 30]} />
+        <RangeSlider
+          min={0}
+          max={30}
+          step={1}
+          value={[filters.prices.priceFrom || 0, filters.prices.priceTo || 30]}
+          onValueChange={updatePrices}
+        />
       </div>
       <CheckboxFiltersGroup
         title="Ingredients"
         className="mt-5"
         limit={6}
-        defaultItems={defaultMockItems}
-        items={allMockItems}
+        defaultItems={items.slice(0, 6)}
+        items={items}
+        loading={loading}
+        onClickCheckbox={filters.setSelectedIngredients}
+        selectedValues={filters.selectedIngredients}
+        name="ingredients"
       />
     </div>
   );
