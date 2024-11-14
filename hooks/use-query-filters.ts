@@ -12,7 +12,7 @@ export const useQueryFilters = (filters: Filters) => {
       sizes: Array.from(filters.sizes),
       ingredients: Array.from(filters.selectedIngredients),
     };
-
+    // TODO separate logic
     const filteredFilters: Partial<Queryfilters> = {
       ...(params.priceFrom !== undefined && params.priceFrom !== 0
         ? { priceFrom: params.priceFrom }
